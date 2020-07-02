@@ -18,14 +18,14 @@ shinyServer( function(input, output) {
     readData <- reactive({
         csvfiles <- paste(input$gcm, paste0("v1-r", 1:10), input$rcm, paste0("rcp", input$rcp), "csv", sep="." )
         
-        datafiles <- list.files("../data")
+        datafiles <- list.files("data/")
         
         whichfiles <- csvfiles %in% datafiles
         
         listdf <- NULL
         
         for (file in csvfiles[whichfiles]) {
-            rdf <- read.csv(paste0("../data/",file), sep=";")
+            rdf <- read.csv(paste0("data/",file), sep=";")
             rts <- xts(rdf[,-1], order.by = as.POSIXct(rdf[,1], origin="1970-01-01"))
             listdf <- append(listdf, list(rts))
         }
@@ -37,14 +37,14 @@ shinyServer( function(input, output) {
     readData2 <- reactive({
         csvfiles <- paste(input$gcm2, paste0("v1-r", 1:10), input$rcm2, paste0("rcp", input$rcp2), "csv", sep="." )
         
-        datafiles <- list.files("../data")
+        datafiles <- list.files("data/")
         
         whichfiles <- csvfiles %in% datafiles
         
         listdf <- NULL
         
         for (file in csvfiles[whichfiles]) {
-            rdf <- read.csv(paste0("../data/",file), sep=";")
+            rdf <- read.csv(paste0("data/",file), sep=";")
             rts <- xts(rdf[,-1], order.by = as.POSIXct(rdf[,1], origin="1970-01-01"))
             listdf <- append(listdf, list(rts))
         }

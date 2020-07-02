@@ -1,0 +1,12 @@
+name: shinyruins
+title: shinyruins
+username:
+account: copulatheque
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2521294
+bundleId: 3334223
+url: https://copulatheque.shinyapps.io/shinyruins/
+when: 1593525685.93905
+asMultiple: FALSE
+asStatic: FALSE
