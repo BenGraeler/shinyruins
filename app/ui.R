@@ -35,7 +35,7 @@ shinyUI(fluidPage(
                                            animate = animationOptions(loop = T))),
                         column(6, 
                                checkboxInput("reverseMonth", "Invertiere Auswahl"),
-                               bsTooltip("reverseMonth", "z.B. für den Vergelich von Sommer- und Wintermonaten",
+                               bsTooltip("reverseMonth", "z.B. für den Vergleich von Sommer- und Wintermonaten",
                                          "right"))),
                plotOutput("densityPlot")
         ),
