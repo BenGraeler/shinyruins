@@ -8,6 +8,7 @@
 #
 
 library(shiny)
+library(shinyBS)
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
@@ -27,10 +28,15 @@ shinyUI(fluidPage(
         ),
         column(8,
                plotOutput("tsPlot"),
-               fluidRow(column(9,
-                               sliderInput("months", label = "Monate", min = 1, max = 12, value = c(1,12))),
-                        column(3, 
-                               checkboxInput("reverseMonth", "Invertiere Auswahl"))),
+               fluidRow(column(6,
+                               sliderInput("months", label = "Auswahl von Monaten",
+                                           min = 1, max = 12, value = c(1,12), 
+                                           step = 1, ticks = F, 
+                                           animate = animationOptions(loop = T))),
+                        column(6, 
+                               checkboxInput("reverseMonth", "Invertiere Auswahl"),
+                               bsTooltip("reverseMonth", "z.B. für den Vergelich von Sommer- und Wintermonaten",
+                                         "right"))),
                plotOutput("densityPlot")
         ),
         column(2,

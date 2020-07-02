@@ -12,6 +12,16 @@ library(xts)
 library(reshape2)
 library(ggplot2)
 
+monate.lang <- c("Januar", "Februar", "März",
+                 "April", "Mai", "Juni",
+                 "Juli", "August", "September",
+                 "Oktober", "November", "Dezember")
+
+monate.kurz <- c("Jan", "Feb", "Mar",
+                 "Apr", "Mai", "Jun",
+                 "Jul", "Aug", "Sep",
+                 "Okt", "Nov", "Dez")
+
 # Define server logic required to draw a histogram
 shinyServer( function(input, output) {
     
@@ -53,6 +63,7 @@ shinyServer( function(input, output) {
         do.call(merge, lapply(listdf, function(x) x[, input$var2]))
     })
     
+    # controls second axis and plotting of second variable (aligned or none-aligned axes)
     comparable <- reactive({
         input$var == input$var2 # and other, e.g. any temperature
     })
@@ -66,10 +77,7 @@ shinyServer( function(input, output) {
         # drop years, merge monthly
         yrs <- as.numeric(substr(as.character(index(rtsSub)), 1, 4))
         mth <- factor(months(index(rtsSub)), 
-                      levels = c("Januar", "Februar", "März",
-                                 "April", "Mai", "Juni",
-                                 "Juli", "August", "September",
-                                 "Oktober", "November", "Dezember"),
+                      levels = monate.lang,
                       ordered = T)
         
         d <- melt(cbind(mth, as.data.frame(rtsSub)), id.vars="mth")
@@ -84,10 +92,7 @@ shinyServer( function(input, output) {
         # drop years, merge monthly
         yrs2 <- as.numeric(substr(as.character(index(rtsSub2)), 1, 4))
         mth2 <- factor(months(index(rtsSub2)), 
-                       levels = c("Januar", "Februar", "März",
-                                  "April", "Mai", "Juni",
-                                  "Juli", "August", "September",
-                                  "Oktober", "November", "Dezember"),
+                       levels = monate.lang,
                        ordered = T)
         
         d2 <- melt(cbind(mth2, as.data.frame(rtsSub2)), id.vars="mth2")
@@ -112,14 +117,16 @@ shinyServer( function(input, output) {
             geom_line(data = d, col="red", alpha=0.4) +
             geom_line(data = d2, col="blue", alpha=0.4) +
             theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), legend.position="none") +
-            sa + labs(y=input$var) 
+            sa + labs(y=input$var, title = "Jahresgänge im Vergleich") 
     })
     
     output$densityPlot <- renderPlot({
-
+        
         selMth <- input$months
         if (input$reverseMonth)
-            selMth <- rev(selMth)
+            selMth <- pmin(pmax(rev(selMth)+c(1,-1),1),12)
+        
+        
         
         # 1st variable selection
         # filter decade
@@ -129,10 +136,7 @@ shinyServer( function(input, output) {
         # drop years, merge monthly
         yrs <- as.numeric(substr(as.character(index(rtsSub)), 1, 4))
         mth <- factor(months(index(rtsSub)), 
-                      levels = c("Januar", "Februar", "März",
-                                 "April", "Mai", "Juni",
-                                 "Juli", "August", "September",
-                                 "Oktober", "November", "Dezember"),
+                      levels = monate.lang,
                       ordered = T)
         
         selRows <- as.numeric(mth) >= selMth[1] & as.numeric(mth) <= selMth[2]
@@ -149,10 +153,7 @@ shinyServer( function(input, output) {
         # drop years, merge monthly
         yrs2 <- as.numeric(substr(as.character(index(rtsSub2)), 1, 4))
         mth2 <- factor(months(index(rtsSub2)), 
-                       levels = c("Januar", "Februar", "März",
-                                  "April", "Mai", "Juni",
-                                  "Juli", "August", "September",
-                                  "Oktober", "November", "Dezember"),
+                       levels = monate.lang,
                        ordered = T)
         
         selRows2 <- as.numeric(mth2) >= selMth[1] & as.numeric(mth2) <= selMth[2]
@@ -166,7 +167,15 @@ shinyServer( function(input, output) {
         ggplot(NULL, aes(var)) +
             geom_density(data = d, fill = "red", colour="red", alpha = 0.1) +
             geom_density(data = d2, fill = "blue", colour="blue", alpha = 0.1) + 
+            geom_vline(aes(xintercept=median(d$var)), color="red", linetype="dashed", size=1, alpha=0.3) +
+            geom_vline(aes(xintercept=median(d2$var)), color="blue", linetype="dashed", size=1, alpha=0.3) +
             xlim(r[1]- diff(r)*0.2, r[2]+diff(r)*0.2) + 
-            labs(x = paste(input$var, "/", input$var2))
+            labs(x = paste(input$var, "/", input$var2), 
+                 y = "Wahrscheinlichkeit",
+                 title = ifelse(selMth[1] != selMth[2],
+                     paste("Verteilung von", monate.lang[selMth[1]],
+                               "bis", monate.lang[selMth[2]]),
+                     paste("Verteilung im", monate.lang[selMth[1]])))
+        
     })
 })
