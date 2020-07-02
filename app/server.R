@@ -17,10 +17,20 @@ monate.lang <- c("Januar", "Februar", "März",
                  "Juli", "August", "September",
                  "Oktober", "November", "Dezember")
 
+month.long <- c("January", "February", "March",
+                "April", "May", "June",
+                "July", "August", "September",
+                "October","November","December")
+
 monate.kurz <- c("Jan", "Feb", "Mar",
                  "Apr", "Mai", "Jun",
                  "Jul", "Aug", "Sep",
                  "Okt", "Nov", "Dez")
+
+month.short <- c("Jan", "Feb", "Mar",
+                 "Apr", "May", "Jun",
+                 "Jul", "Aug", "Sep",
+                 "Oct","Nov", "Dec")
 
 # Define server logic required to draw a histogram
 shinyServer( function(input, output) {
@@ -76,8 +86,11 @@ shinyServer( function(input, output) {
         
         # drop years, merge monthly
         yrs <- as.numeric(substr(as.character(index(rtsSub)), 1, 4))
-        mth <- factor(months(index(rtsSub)), 
-                      levels = monate.lang,
+        mth <- months(index(rtsSub))
+        mth <- factor(mth, 
+                      levels = switch("Mai" %in% mth + 1,
+                                      month.long,
+                                      monate.lang),
                       ordered = T)
         
         d <- melt(cbind(mth, as.data.frame(rtsSub)), id.vars="mth")
@@ -91,8 +104,11 @@ shinyServer( function(input, output) {
         
         # drop years, merge monthly
         yrs2 <- as.numeric(substr(as.character(index(rtsSub2)), 1, 4))
-        mth2 <- factor(months(index(rtsSub2)), 
-                       levels = monate.lang,
+        mth2 <- months(index(rtsSub2))
+        mth2 <- factor(mth2, 
+                       levels = switch("Mai" %in% mth2 + 1,
+                                       month.long,
+                                       monate.lang),
                        ordered = T)
         
         d2 <- melt(cbind(mth2, as.data.frame(rtsSub2)), id.vars="mth2")
@@ -135,8 +151,11 @@ shinyServer( function(input, output) {
         
         # drop years, merge monthly
         yrs <- as.numeric(substr(as.character(index(rtsSub)), 1, 4))
-        mth <- factor(months(index(rtsSub)), 
-                      levels = monate.lang,
+        mth <- months(index(rtsSub))
+        mth <- factor(mth, 
+                      levels = switch("Mai" %in% mth + 1,
+                                      month.long,
+                                      monate.lang),
                       ordered = T)
         
         selRows <- as.numeric(mth) >= selMth[1] & as.numeric(mth) <= selMth[2]
@@ -152,8 +171,11 @@ shinyServer( function(input, output) {
         
         # drop years, merge monthly
         yrs2 <- as.numeric(substr(as.character(index(rtsSub2)), 1, 4))
-        mth2 <- factor(months(index(rtsSub2)), 
-                       levels = monate.lang,
+        mth2 <- months(index(rtsSub2))
+        mth2 <- factor(mth2, 
+                       levels = switch("Mai" %in% mth2 + 1,
+                                       month.long,
+                                       monate.lang),
                        ordered = T)
         
         selRows2 <- as.numeric(mth2) >= selMth[1] & as.numeric(mth2) <= selMth[2]
@@ -173,9 +195,9 @@ shinyServer( function(input, output) {
             labs(x = paste(input$var, "/", input$var2), 
                  y = "Wahrscheinlichkeit",
                  title = ifelse(selMth[1] != selMth[2],
-                     paste("Verteilung von", monate.lang[selMth[1]],
-                               "bis", monate.lang[selMth[2]]),
-                     paste("Verteilung im", monate.lang[selMth[1]])))
+                                paste("Verteilung von", monate.lang[selMth[1]],
+                                      "bis", monate.lang[selMth[2]]),
+                                paste("Verteilung im", monate.lang[selMth[1]])))
         
     })
 })
