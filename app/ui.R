@@ -47,7 +47,7 @@ shinyUI(fluidPage(
                selectInput("rcp2", "RCP", choices = c("85", "45")),
                selectInput("var2", "Variable", choices = c("T", "Tmin", "Tmax", "Prec", "Rs", "RH", "u2", "vabar", "aP", "EToPM", "EToPM1", "EToHG", "EToSJ", "EToPT", "scPDSIhg", "scPDSIpm")),
                selectInput("dec2", "Dekade", choices = c("2000","2010","2020","2030","2040","2050","2060","2070","2080", "2090"), selected = "2090"),
-               colourInput("col2", "Select colour", value = "blue", showColour='background')
+               colourInput("col2", "Wähle eine Farbe", value = "blue", showColour='background')
         )
     )
 ))
