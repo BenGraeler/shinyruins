@@ -130,8 +130,8 @@ shinyServer( function(input, output) {
         }
         
         ggplot(NULL, aes(x=month, y = variable, group=yearVar)) +
-            geom_line(data = d, col="red", alpha=0.4) +
-            geom_line(data = d2, col="blue", alpha=0.4) +
+            geom_line(data = d, col=input$col1, alpha=0.4) +
+            geom_line(data = d2, col=input$col2, alpha=0.4) +
             theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1), legend.position="none") +
             sa + labs(y=input$var, title = "Jahresgänge im Vergleich") 
     })
@@ -187,10 +187,10 @@ shinyServer( function(input, output) {
         r <- range(rbind(rtsSub, rtsSub2))
         
         ggplot(NULL, aes(var)) +
-            geom_density(data = d, fill = "red", colour="red", alpha = 0.1) +
-            geom_density(data = d2, fill = "blue", colour="blue", alpha = 0.1) + 
-            geom_vline(aes(xintercept=median(d$var)), color="red", linetype="dashed", size=1, alpha=0.3) +
-            geom_vline(aes(xintercept=median(d2$var)), color="blue", linetype="dashed", size=1, alpha=0.3) +
+            geom_density(data = d, fill = input$col1, colour=input$col1, alpha = 0.1) +
+            geom_density(data = d2, fill = input$col2, colour=input$col2, alpha = 0.1) + 
+            geom_vline(aes(xintercept=median(d$var)), color=input$col1, linetype="dashed", size=1, alpha=0.3) +
+            geom_vline(aes(xintercept=median(d2$var)), color=input$col2, linetype="dashed", size=1, alpha=0.3) +
             xlim(r[1]- diff(r)*0.2, r[2]+diff(r)*0.2) + 
             labs(x = paste(input$var, "/", input$var2), 
                  y = "Wahrscheinlichkeit",
